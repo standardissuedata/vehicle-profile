@@ -1,0 +1,22 @@
+{
+  "name": "sid-vehicle-profile",
+  "version": "0.1.0",
+  "description": "Look up public US vehicle identity, safety and fuel economy data from a VIN.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": { "vehicle-profile": "./bin/vehicle-profile.mjs" },
+  "files": ["dist", "bin"],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test",
+    "prepack": "npm run build"
+  },
+  "devDependencies": { "typescript": "5.9.3" }
+}
