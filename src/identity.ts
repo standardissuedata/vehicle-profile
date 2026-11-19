@@ -16,12 +16,15 @@ export function validateVin(value: string): {vin: string; northAmericanCheckDigi
   return {vin, northAmericanCheckDigitValid: vin[8] === (digit === 10 ? 'X' : String(digit))};
 }
 
-export type Drive = 'fwd' | 'rwd' | '2wd' | 'awd' | '4wd';
+export type Drive = 'fwd' | 'rwd' | '2wd' | 'awd' | '4wd' | 'awd_or_4wd';
 
 export function driveType(value: string | null): Drive | null {
   if (!value) return null;
-  if (/\bAWD\b|all[- ]wheel/i.test(value)) return 'awd';
-  if (/\b4WD\b|\b4x4\b|(?:four|4)[- ]wheel/i.test(value)) return '4wd';
+  const allWheel = /\bAWD\b|all[- ]wheel/i.test(value);
+  const fourWheel = /\b4WD\b|\b4x4\b|(?:four|4)[- ]wheel/i.test(value);
+  if (allWheel && fourWheel) return 'awd_or_4wd';
+  if (allWheel) return 'awd';
+  if (fourWheel) return '4wd';
   if (/\bFWD\b|front[- ]wheel/i.test(value)) return 'fwd';
   if (/\bRWD\b|rear[- ]wheel/i.test(value)) return 'rwd';
   if (/\b2WD\b|\b4x2\b|two[- ]wheel/i.test(value)) return '2wd';
@@ -30,6 +33,8 @@ export function driveType(value: string | null): Drive | null {
 
 export function sameDrive(left: Drive | null, right: Drive | null): boolean {
   if (!left || !right || left === right) return true;
+  if (left === 'awd_or_4wd') return right === 'awd' || right === '4wd';
+  if (right === 'awd_or_4wd') return left === 'awd' || left === '4wd';
   return (left === '2wd' && (right === 'fwd' || right === 'rwd'))
     || (right === '2wd' && (left === 'fwd' || left === 'rwd'));
 }

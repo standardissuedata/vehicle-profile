@@ -36,6 +36,8 @@ The CLI writes versioned JSON to standard output. Invalid input exits with statu
 
 A recall campaign found by model year, make, and model requires a separate [VIN-specific recall check](https://www.nhtsa.gov/recalls) to establish whether that vehicle still needs repair. Owner complaints are consumer reports about the model. Configuration results identify the compatible upstream records. When multiple candidates remain, the status is `ambiguous` and the response includes those candidates. Source errors and empty results have separate statuses.
 
+Legacy EPA records that combine all-wheel and four-wheel drive use `drive: 'awd_or_4wd'`. They remain compatible with either drivetrain, but do not establish which one the vehicle has. Fuel-economy units are `mpge` for electricity and natural gas, and `mpg` for gasoline and other liquid fuels. Plug-in hybrids retain both fuel ratings and electric range.
+
 The full VIN is sent to vPIC. The safety and fuel-economy queries use decoded details. For bulk workloads, use [NHTSA's published downloads](https://www.nhtsa.gov/nhtsa-datasets-and-apis) and the [fuel-economy files](https://www.fueleconomy.gov/feg/download.shtml). See the [NHTSA API use policy](https://api.nhtsa.gov/).
 
 ## Contribute

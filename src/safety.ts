@@ -8,11 +8,15 @@ function byVehicle(path: string, vehicle: Vehicle): URL {
   return endpoint(NHTSA, path, {make: vehicle.make, model: vehicle.model, modelYear: String(vehicle.year)});
 }
 
-function date(value: unknown): string | null {
+function date(value: unknown, order: 'dmy' | 'mdy'): string | null {
   const raw = string(value);
   if (!raw) return null;
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
-  return match ? `${match[3]}-${match[2]}-${match[1]}` : null;
+  if (!match) return null;
+  const [, first, second, year] = match;
+  const iso = order === 'dmy' ? `${year}-${second}-${first}` : `${year}-${first}-${second}`;
+  const parsed = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== iso ? null : iso;
 }
 
 export function lookupRecalls(vehicle: Vehicle | null, get: GetJson) {
@@ -20,7 +24,7 @@ export function lookupRecalls(vehicle: Vehicle | null, get: GetJson) {
   return section('NHTSA recall campaigns', url, 'year_make_model', vehicle && (async url =>
     asRows((await get(url)).results).map(row => ({
       campaignId: string(row.NHTSACampaignNumber), component: string(row.Component),
-      reportedOn: date(row.ReportReceivedDate), summary: string(row.Summary),
+      reportedOn: date(row.ReportReceivedDate, 'dmy'), summary: string(row.Summary),
       consequence: string(row.Consequence), remedy: string(row.Remedy),
     }))
   ));
@@ -30,7 +34,7 @@ export function lookupComplaints(vehicle: Vehicle | null, get: GetJson) {
   const url = vehicle ? byVehicle('/complaints/complaintsByVehicle', vehicle) : DOCS;
   return section('NHTSA owner complaints', url, 'year_make_model', vehicle && (async url =>
     asRows((await get(url)).results).map(row => ({
-      complaintId: number(row.odiNumber), filedOn: date(row.dateComplaintFiled),
+      complaintId: number(row.odiNumber), filedOn: date(row.dateComplaintFiled, 'mdy'),
       components: string(row.components), reportedSummary: string(row.summary),
     }))
   ));
@@ -38,9 +42,9 @@ export function lookupComplaints(vehicle: Vehicle | null, get: GetJson) {
 
 function cabType(value: string | null): string | null {
   if (!value) return null;
-  if (/regular cab|standard cab/i.test(value)) return 'regular';
-  if (/super ?cab|extended cab/i.test(value)) return 'extended';
-  if (/crew/i.test(value)) return 'crew';
+  if (/regular cab|standard cab|\bPU\/RC\b/i.test(value)) return 'regular';
+  if (/super ?cab|extended cab|\bPU\/EC\b/i.test(value)) return 'extended';
+  if (/crew|\bPU\/CC\b/i.test(value)) return 'crew';
   return null;
 }
 
@@ -77,11 +81,14 @@ export function lookupRatings(vehicle: Vehicle | null, get: GetJson) {
     : DOCS;
   return section('NHTSA 5-Star Safety Ratings', url, 'configuration', vehicle && (async url => {
     const candidates = await ratingCandidates(vehicle, url, get);
+    const cab = cabType(vehicle.cabType);
     const compatible = candidates.flatMap(row => {
       const id = number(row.VehicleId);
       const description = string(row.VehicleDescription);
       if (id === null || !description) return [];
       const drive = driveType(description);
+      const candidateCab = cabType(description);
+      if (cab && candidateCab && cab !== candidateCab) return [];
       const doors = number(description.match(/\b(\d)\s*(?:DR|DOOR)\b/i)?.[1]);
       if (!sameDrive(vehicle.drive, drive) || (vehicle.doors && doors && vehicle.doors !== doors)) return [];
       return [{id, description, drive}];

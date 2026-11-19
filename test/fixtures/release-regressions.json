@@ -1,0 +1,191 @@
+{
+  "provenance": {
+    "retrievedOn": "2026-11-19",
+    "note": "Selected fields from public API responses; menu envelopes in tests are synthetic.",
+    "urls": {
+      "complaints": "https://api.nhtsa.gov/complaints/complaintsByVehicle?make=toyota&model=camry&modelYear=2024",
+      "recalls": "https://api.nhtsa.gov/recalls/recallsByVehicle?make=toyota&model=camry&modelYear=2024",
+      "voltIdentity": "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/1G1RA6S52HU145814?format=json",
+      "voltEpa": "https://www.fueleconomy.gov/ws/rest/vehicle/37309",
+      "jeepEpa": "https://www.fueleconomy.gov/ws/rest/vehicle/24669",
+      "cngEpa": "https://www.fueleconomy.gov/ws/rest/vehicle/34728",
+      "silveradoCandidates": "https://api.nhtsa.gov/SafetyRatings/modelyear/2020/make/CHEVROLET/model/SILVERADO%201500",
+      "silveradoDetails": [
+        "https://api.nhtsa.gov/SafetyRatings/VehicleId/14385",
+        "https://api.nhtsa.gov/SafetyRatings/VehicleId/14383",
+        "https://api.nhtsa.gov/SafetyRatings/VehicleId/14381"
+      ]
+    }
+  },
+  "complaints": {
+    "results": [
+      {
+        "odiNumber": 11775517,
+        "dateComplaintFiled": "11/03/2026"
+      },
+      {
+        "odiNumber": 11771766,
+        "dateComplaintFiled": "10/16/2026"
+      },
+      {
+        "odiNumber": 11768720,
+        "dateComplaintFiled": "10/03/2026"
+      }
+    ]
+  },
+  "recalls": {
+    "results": [
+      {
+        "NHTSACampaignNumber": "24V128000",
+        "ReportReceivedDate": "22/02/2024"
+      }
+    ]
+  },
+  "voltIdentity": {
+    "Results": [
+      {
+        "ModelYear": "2017",
+        "Make": "CHEVROLET",
+        "Model": "Volt",
+        "Trim": "LT",
+        "DriveType": "",
+        "Doors": "4",
+        "CabType": null,
+        "EngineCylinders": "4",
+        "DisplacementL": "1.5",
+        "FuelTypePrimary": "Electric",
+        "FuelTypeSecondary": "Gasoline",
+        "ElectrificationLevel": "PHEV (Plug-in Hybrid Electric Vehicle)",
+        "ErrorCode": "0"
+      }
+    ]
+  },
+  "silveradoCandidates": {
+    "Count": 6,
+    "Message": "Results returned successfully",
+    "Results": [
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/CC 4WD",
+        "VehicleId": 14385
+      },
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/EC 4WD",
+        "VehicleId": 14383
+      },
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/RC 4WD",
+        "VehicleId": 14381
+      },
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/CC 2WD",
+        "VehicleId": 14361
+      },
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/EC 2WD",
+        "VehicleId": 14359
+      },
+      {
+        "VehicleDescription": "2020 Chevrolet Silverado 1500 PU/RC 2WD",
+        "VehicleId": 14357
+      }
+    ]
+  },
+  "silveradoDetails": {
+    "14385": {
+      "Results": [
+        {
+          "VehicleId": 14385,
+          "OverallRating": "4",
+          "OverallFrontCrashRating": "4",
+          "OverallSideCrashRating": "5",
+          "RolloverRating": "4"
+        }
+      ]
+    },
+    "14383": {
+      "Results": [
+        {
+          "VehicleId": 14383,
+          "OverallRating": "5",
+          "OverallFrontCrashRating": "4",
+          "OverallSideCrashRating": "5",
+          "RolloverRating": "4"
+        }
+      ]
+    },
+    "14381": {
+      "Results": [
+        {
+          "VehicleId": 14381,
+          "OverallRating": "5",
+          "OverallFrontCrashRating": "4",
+          "OverallSideCrashRating": "5",
+          "RolloverRating": "4"
+        }
+      ]
+    }
+  },
+  "voltEpa": {
+    "id": "37309",
+    "year": "2017",
+    "make": "Chevrolet",
+    "model": "Volt",
+    "fuelType1": "Regular Gasoline",
+    "fuelType2": "Electricity",
+    "atvType": "Plug-in Hybrid",
+    "drive": "Front-Wheel Drive",
+    "cylinders": "4",
+    "displ": "1.5",
+    "trany": "Automatic (variable gear ratios)",
+    "city08": "43",
+    "highway08": "42",
+    "comb08": "42",
+    "cityA08": "113",
+    "highwayA08": "99",
+    "combA08": "106",
+    "range": "420",
+    "rangeA": "53"
+  },
+  "jeepEpa": {
+    "id": "24669",
+    "year": "2008",
+    "make": "Jeep",
+    "model": "Wrangler 4WD",
+    "fuelType1": "Regular Gasoline",
+    "fuelType2": "",
+    "atvType": "",
+    "drive": "4-Wheel or All-Wheel Drive",
+    "cylinders": "6",
+    "displ": "3.8",
+    "trany": "Automatic 4-spd",
+    "city08": "15",
+    "highway08": "19",
+    "comb08": "17",
+    "cityA08": "0",
+    "highwayA08": "0",
+    "combA08": "0",
+    "range": "0",
+    "rangeA": ""
+  },
+  "cngEpa": {
+    "id": "34728",
+    "year": "2014",
+    "make": "Honda",
+    "model": "Civic Natural Gas",
+    "fuelType1": "Natural Gas",
+    "fuelType2": "",
+    "atvType": "CNG",
+    "drive": "Front-Wheel Drive",
+    "cylinders": "4",
+    "displ": "1.8",
+    "trany": "Automatic 5-spd",
+    "city08": "27",
+    "highway08": "38",
+    "comb08": "31",
+    "cityA08": "0",
+    "highwayA08": "0",
+    "combA08": "0",
+    "range": "0",
+    "rangeA": ""
+  }
+}

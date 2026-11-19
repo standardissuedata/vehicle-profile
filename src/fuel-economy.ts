@@ -19,26 +19,42 @@ function fuelType(value: string | null): string | null {
   if (/diesel/i.test(value)) return 'diesel';
   if (/gasoline/i.test(value)) return 'gasoline';
   if (/hydrogen/i.test(value)) return 'hydrogen';
-  if (/compressed natural gas|\bCNG\b/i.test(value)) return 'cng';
+  if (/\bnatural gas\b|\bCNG\b/i.test(value)) return 'cng';
   if (/propane|\bLPG\b/i.test(value)) return 'lpg';
   return null;
+}
+
+function electrification(value: string | null): 'phev' | 'hev' | 'bev' | 'none' | null {
+  if (!value) return null;
+  if (/\bPHEV\b|plug[- ]in hybrid/i.test(value)) return 'phev';
+  if (/\bBEV\b|battery electric|^EV$/i.test(value)) return 'bev';
+  if (/\bM?HEV\b|\bhybrid\b/i.test(value)) return 'hev';
+  if (/not electrified|^no$/i.test(value)) return 'none';
+  return null;
+}
+
+function units(value: string | null): 'mpg' | 'mpge' {
+  const fuel = fuelType(value);
+  return fuel === 'electric' || fuel === 'cng' ? 'mpge' : 'mpg';
 }
 
 function compatible(vehicle: Vehicle, row: Row): boolean {
   const cylinders = number(row.cylinders);
   const displacement = number(row.displ);
-  const fuel = fuelType(string(row.fuelType1));
+  const fuels = [fuelType(string(row.fuelType1)), fuelType(string(row.fuelType2))];
   const drive = driveType(string(row.drive));
   if (!sameDrive(vehicle.drive, drive)) return false;
   if (vehicle.cylinders && cylinders && vehicle.cylinders !== cylinders) return false;
   if (vehicle.displacementLiters && displacement
       && Math.abs(vehicle.displacementLiters - displacement) > 0.15) return false;
   const expectedFuel = fuelType(vehicle.fuel);
-  if (expectedFuel && fuel && expectedFuel !== fuel) return false;
+  if (expectedFuel && fuels.some(fuel => fuel !== null) && !fuels.includes(expectedFuel)) return false;
   const powertrain = `${string(row.atvType) ?? ''} ${string(row.model) ?? ''}`;
-  const hybrid = /\bhybrid\b|\bPHEV\b|\bHEV\b/i.test(powertrain);
-  if (vehicle.electrification && /\bhybrid\b|\bPHEV\b|\bHEV\b/i.test(vehicle.electrification) && !hybrid) return false;
-  if (vehicle.electrification && /not electrified|^no$/i.test(vehicle.electrification) && hybrid) return false;
+  const expectedPowertrain = electrification(vehicle.electrification);
+  const dualFuel = fuels.some(fuel => fuel !== null && fuel !== 'electric');
+  const candidatePowertrain = electrification(string(row.atvType)) ?? electrification(powertrain)
+    ?? (fuels.includes('electric') ? (dualFuel ? 'phev' : 'bev') : 'none');
+  if (expectedPowertrain && expectedPowertrain !== candidatePowertrain) return false;
   return true;
 }
 
@@ -51,14 +67,15 @@ function toConfiguration(row: Row, url: URL, id: string) {
   return {
     id, url: url.href, model, fuel, drive: driveType(string(row.drive)),
     transmission: string(row.trany), cylinders: number(row.cylinders),
-    displacementLiters: number(row.displ), units: electric ? 'mpge' as const : 'mpg' as const,
+    displacementLiters: number(row.displ), units: units(fuel),
     city: number(row.city08), highway: number(row.highway08), combined: number(row.comb08),
     secondary: secondaryFuel ? {
       fuel: secondaryFuel,
-      units: fuelType(secondaryFuel) === 'electric' ? 'mpge' as const : 'mpg' as const,
+      units: units(secondaryFuel),
       city: number(row.cityA08), highway: number(row.highwayA08), combined: number(row.combA08),
     } : null,
-    electricRangeMiles: electric ? number(row.range) : number(row.rangeA),
+    electricRangeMiles: electric ? number(row.range)
+      : fuelType(secondaryFuel) === 'electric' ? number(row.rangeA) : null,
   };
 }
 
