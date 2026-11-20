@@ -6,8 +6,6 @@ A TypeScript library and CLI from Standard Issue Data. Look up a vehicle's ident
 
 Requires Node.js 22 or later.
 
-The 0.1.0 release is being prepared locally. The registry commands below apply after publication.
-
 ```sh
 npm install @standardissuedata/vehicle-profile
 npx @standardissuedata/vehicle-profile 4T1K61AK7RU219133
