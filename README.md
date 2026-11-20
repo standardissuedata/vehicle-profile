@@ -2,9 +2,25 @@
 
 A TypeScript library and CLI from Standard Issue Data. Look up a vehicle's identity, recall campaigns, owner complaints, crash ratings, and rated fuel economy from a VIN. The tool calls public U.S. data sources directly.
 
-## Run locally
+## Install and use
 
 Requires Node.js 22 or later.
+
+The 0.1.0 release is being prepared locally. The registry commands below apply after publication.
+
+```sh
+npm install @standardissuedata/vehicle-profile
+npx @standardissuedata/vehicle-profile 4T1K61AK7RU219133
+```
+
+For a global CLI installation:
+
+```sh
+npm install --global @standardissuedata/vehicle-profile
+vehicle-profile 4T1K61AK7RU219133
+```
+
+To build from source:
 
 ```sh
 npm ci
@@ -15,7 +31,7 @@ node bin/vehicle-profile.mjs 4T1K61AK7RU219133
 Once installed as a package, the command is `vehicle-profile <VIN>`.
 
 ```ts
-import { lookupVehicle, validateVin } from 'sid-vehicle-profile';
+import { lookupVehicle, validateVin } from '@standardissuedata/vehicle-profile';
 
 const { vin } = validateVin('4T1K61AK7RU219133');
 const profile = await lookupVehicle(vin);
@@ -42,6 +58,10 @@ The full VIN is sent to vPIC. The safety and fuel-economy queries use decoded de
 
 ## Contribute
 
-Run `npm test`. When reporting a matching issue, include the model year, make, model, and relevant source record IDs. Share a VIN in a public issue only if you intend it to be public. The tests use offline fixtures.
+Run `npm ci`, `npm test`, and `npm run test:package`. CI runs these checks on Node.js 22, 24, and 26. The tests use offline fixtures; CI does not query upstream APIs or publish packages. The package check builds and installs a tarball offline, verifies the library and CLI, and compiles a TypeScript consumer.
+
+When reporting a matching issue, include the model year, make, model, and relevant source record IDs. Share a VIN in a public issue only if you intend it to be public.
+
+See [CHANGELOG.md](./CHANGELOG.md) for release notes.
 
 The code is MIT-licensed. Upstream datasets and records remain subject to their respective source terms.
