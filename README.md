@@ -54,6 +54,10 @@ Legacy EPA records that combine all-wheel and four-wheel drive use `drive: 'awd_
 
 The full VIN is sent to vPIC. The safety and fuel-economy queries use decoded details. For bulk workloads, use [NHTSA's published downloads](https://www.nhtsa.gov/nhtsa-datasets-and-apis) and the [fuel-economy files](https://www.fueleconomy.gov/feg/download.shtml). See the [NHTSA API use policy](https://api.nhtsa.gov/).
 
+## Hosted vehicle history
+
+Use the [Standard Issue Data API](https://standardissuedata.com/docs#price-history) to add listing history, dated asking-price changes, auction bids, and confirmed sales where available. SID provides the hosted lookup over REST and MCP.
+
 ## Contribute
 
 Run `npm ci`, `npm test`, and `npm run test:package`. CI runs these checks on Node.js 22, 24, and 26. The tests use offline fixtures; CI does not query upstream APIs or publish packages. The package check builds and installs a tarball offline, verifies the library and CLI, and compiles a TypeScript consumer.
